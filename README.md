@@ -1,39 +1,53 @@
-# JPacman
+# SYSC 3020 Term Project — Team Repository
 
-[![Build Status](https://travis-ci.com/SERG-Delft/jpacman.svg?branch=master)](https://travis-ci.com/SERG-Delft/jpacman)
+Welcome. This repository is your team's home for the whole term project — an
+engineering engagement on the open-source Java game **SERG-Delft/jpacman**.
+You will engineer the **fixed project subset — the Pac-Man core game logic** — through requirements, design, and
+testing across six assignments. Read the assignment handouts and the
+**Project Overview** for full details.
 
-## About
+## Expected repository layout
 
-Pacman-like game used for teaching software testing.
-It exposes students to the use of git, Gradle, JUnit, and mockito.
+Keep your deliverables in these locations so the automatic checks can find them
+(the checks are a *health signal*, not your grade — see below):
 
-Parts of the code are well tested, whereas others are left untested intentionally. As a student in software testing, you can extend the test suite, or use the codebase to build extensions in a test-driven way. As a teacher, you can use JPacman to create your own testing exercises.
+```
+SRS.pdf                     # A1: your requirements document
+RTM.md                      # Requirements Traceability Matrix (grows every assignment)
+TEAM_CHARTER.md             # A1: team charter
+AI_USAGE.md                 # AI-usage note (update every assignment)
+docs/
+  uml/        *.puml        # A2/A3: class, sequence, and state-machine diagrams (+ rendered images)
+  design/     *.pdf         # A2: domain & interaction design doc
+  arch/       *.pdf         # A3: architecture document
+  adr/        ADR-*.md      # A3: Architecture Decision Records
+  rfc/        RFC-*.md      # A4: detailed design & design-pattern RFC
+  test/       TEST_PLAN.md  # A5: test plan
+src/ or a submodule         # the buildable game code + your tests (see setup)
+templates/                  # blank templates to copy from
+```
 
-We have developed and are using this code at a software testing course at Delft University of Technology, The Netherlands. Teachers interested in seeing the exercises I use there are invited to contact me.
+## How work is submitted
 
-Other universities who have used this material include Antwerp, Mons, Eindhoven, and UBC (Vancouver).
-At TU Delft, we use it in combination with GitLab as continuous integration and feedback server.
+- Do **all** work on **feature branches** and merge via **pull requests** that a
+  teammate reviews and approves. Do not commit directly to `main`.
+- Every change should reference its **Linear** issue ID.
+- Tag each submission (`a1-submission`, `a2-submission`, …) and submit the PDF on
+  Brightspace as instructed.
 
-If you have any suggestions on how to improve JPacman, please do not hesitate to contact us, open an issue, or provide a pull request. Since testing is deliberately left as an exercise, pull requests that "solve" exercises or offer full coverage are less likely to be merged.
+## Automatic checks (what they do and don't mean)
 
-Main contributors:
-* Arie van Deursen (versions 1.0-5.x, 2003-2013, updates to versions 6.x and further, 2014-...)
-* Jeroen Roosen (major rewrite, version 6.0, 2014)
+On every push, an **Autograding** workflow runs mechanical checks:
+- **Assignments 1–4:** it only checks that the required files exist and that the
+  code compiles. The *content* of your requirements and design documents is
+  graded **by rubric**, by a human — the checkmarks here are just a reminder.
+- **Assignments 5–6:** the checks are real — your tests must pass and your JaCoCo
+  coverage must reach **90%** (instruction and branch) on the in-scope core-logic classes.
 
-## Getting Started
+The green/red score is a **health signal**, not your grade. Your grade follows
+the rubric in the course's *Evaluation Guide & Rubric*.
 
-### IntelliJ
-1. Git clone the project
-2. Open IntelliJ and create new project "from existing sources"
-3. Select 'Gradle' in the following screen as external model, and click 'Next'
-4. In the next screen, optionally adjust the Gradle options and click 'Finish'
-5. To see JPacman in action: run `nl.tudelft.jpacman.Launcher`
-5. To run the test suite in IntelliJ: right click on a test or directory -> `Run` or `Run ...Test`
+## Getting started
 
-### Command line
-1. Git clone the project
-2. To see JPacman in action: `./gradlew run`
-3. To run the test suite and static analysis tools: `./gradlew check`
-    1. For tests only run `./gradlew test`
-    2. For static analysis tools only run `./gradlew staticAnalysis`
-	 
+1. Build the game: `./gradlew build` (JPacman is self-contained — no companion libraries).
+2. Copy the blanks you need from `templates/` into place and start Assignment 1.

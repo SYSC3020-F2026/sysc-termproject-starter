@@ -1,0 +1,141 @@
+# GitHub Classroom autograding for the SYSC term project (JPacman).
+#
+# JPacman is a self-contained Gradle project (SERG-Delft/jpacman) — no companion
+# libraries to install. It already ships JaCoCo (coverage) and Checkstyle/PMD/
+# SpotBugs (static analysis).
+#
+#   * Assignments 1-4 (requirements & design): presence/build checks only —
+#     the document CONTENT is graded by rubric, not here.
+#   * Assignments 5-6 (testing): real checks — tests pass and JaCoCo coverage
+#     meets the 90% gate on the team's core-logic packages.
+#
+# The score is a "mechanical health" signal, NOT the assignment grade
+# (grades follow Evaluation_Guide_and_Rubric).
+#
+# Coverage scope: set the COVERAGE_SCOPE repo variable (comma-separated package
+# substrings); default is the game logic `board,level,npc` (UI/sprite excluded).
+
+name: Autograding
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  autograde:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '11'          # match the JPacman Gradle wrapper (adjust if needed)
+          distribution: 'temurin'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew || true
+
+      # ---- A1: requirements deliverables present ----
+      - name: A1 - SRS / RTM / charter present
+        id: a1
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A1 files present
+          command: python scripts/check_files.py "**/SRS.pdf" "**/RTM.md" "**/TEAM_CHARTER.md"
+          timeout: 2
+          max-score: 10
+
+      # ---- A2: analysis models present ----
+      - name: A2 - class/sequence PlantUML present
+        id: a2
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A2 models present
+          command: python scripts/check_files.py "docs/uml/*.puml"
+          timeout: 2
+          max-score: 10
+
+      # ---- A3: state machines + ADRs present ----
+      - name: A3 - statecharts + ADRs present
+        id: a3
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A3 behaviour+architecture present
+          command: python scripts/check_files.py "docs/uml/*.puml" "docs/adr/ADR-*.md"
+          timeout: 2
+          max-score: 10
+
+      # ---- A4: design-pattern RFC present ----
+      - name: A4 - RFC present
+        id: a4
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A4 RFC present
+          command: python scripts/check_files.py "docs/rfc/RFC-*.md"
+          timeout: 2
+          max-score: 5
+
+      # ---- Build (real): the project compiles ----
+      - name: Build compiles
+        id: build
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Build compiles
+          command: ./gradlew compileJava
+          timeout: 10
+          max-score: 10
+
+      # ---- A5 (real): the team's tests run and pass ----
+      - name: A5 - tests pass
+        id: a5
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A5 tests pass
+          command: ./gradlew test
+          timeout: 15
+          max-score: 20
+
+      # ---- A6 (real): JaCoCo coverage gate on the core packages ----
+      - name: A6 - coverage report
+        run: ./gradlew test jacocoTestReport || true
+      - name: A6 - coverage gate (>= 90%)
+        id: a6
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: A6 coverage >= 90%
+          command: python scripts/check_coverage.py "${{ vars.COVERAGE_SCOPE || 'board,level,npc' }}" 0.90
+          timeout: 5
+          max-score: 25
+
+      # ---- Cross-cutting: AI-usage disclosure present ----
+      - name: AI usage note present
+        id: ai
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: AI usage note present
+          command: python scripts/check_files.py "**/AI_USAGE*.md"
+          timeout: 2
+          max-score: 10
+
+      - name: Report grade
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          A1_RESULTS: "${{ steps.a1.outputs.result }}"
+          A2_RESULTS: "${{ steps.a2.outputs.result }}"
+          A3_RESULTS: "${{ steps.a3.outputs.result }}"
+          A4_RESULTS: "${{ steps.a4.outputs.result }}"
+          BUILD_RESULTS: "${{ steps.build.outputs.result }}"
+          A5_RESULTS: "${{ steps.a5.outputs.result }}"
+          A6_RESULTS: "${{ steps.a6.outputs.result }}"
+          AI_RESULTS: "${{ steps.ai.outputs.result }}"
+        with:
+          runners: a1,a2,a3,a4,build,a5,a6,ai
