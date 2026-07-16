@@ -44,6 +44,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew || true
 
+      # JPacman's test suite launches the Swing UI (smoke test), which needs a
+      # display. The Linux runner is headless, so provide a virtual framebuffer.
+      - name: Install virtual display (xvfb)
+        run: sudo apt-get update && sudo apt-get install -y xvfb
+
       # ---- A1: requirements deliverables present ----
       - name: A1 - SRS / RTM / charter present
         id: a1
@@ -100,13 +105,13 @@ jobs:
         uses: classroom-resources/autograding-command-grader@v1
         with:
           test-name: A5 tests pass
-          command: ./gradlew test
+          command: xvfb-run -a ./gradlew test
           timeout: 15
           max-score: 20
 
       # ---- A6 (real): JaCoCo coverage gate on the core packages ----
       - name: A6 - coverage report
-        run: ./gradlew test jacocoTestReport || true
+        run: xvfb-run -a ./gradlew test jacocoTestReport || true
       - name: A6 - coverage gate (>= 90%)
         id: a6
         uses: classroom-resources/autograding-command-grader@v1
