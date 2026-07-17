@@ -18,6 +18,7 @@ Record the prompt and your accept/reject decisions in AI_USAGE.md, and the
 confirmed defects + fixes in docs/req-review.md. The rule-based pass below
 catches the mechanical smells; the LLM pass catches the semantic ones.
 """
+import csv as _csv
 import re
 import sys
 
@@ -31,9 +32,26 @@ WEAK_WORDS = [
 def is_requirement_line(line: str) -> bool:
     return bool(re.match(r"^\s*[-*]?\s*(REQ|US|NFR)-\d+", line))
 
+def load_lines(path: str):
+    """Return requirement 'lines'. Accepts Markdown (SRS.md) or a Requirement
+    Yogi CSV export (docs/requirements.csv): each CSV row containing a
+    REQ-/US-/NFR- key is rebuilt as '<KEY>. <all other cells joined>'."""
+    if path.lower().endswith(".csv"):
+        out = []
+        with open(path, newline="", encoding="utf-8-sig") as fh:
+            for row in _csv.reader(fh):
+                key = next((c.strip() for c in row
+                            if re.match(r"^(REQ|US|NFR)-\d+$", c.strip())), None)
+                if key:
+                    text = " ".join(c.strip() for c in row if c.strip() != key)
+                    out.append(f"{key}. {text}")
+        return out
+    return open(path, encoding="utf-8").read().splitlines()
+
+
 def check(path: str) -> int:
     findings = []
-    lines = open(path, encoding="utf-8").read().splitlines()
+    lines = load_lines(path)
     for n, line in enumerate(lines, 1):
         if not is_requirement_line(line):
             continue
@@ -65,5 +83,5 @@ def check(path: str) -> int:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("usage: req_smell_check.py SRS.md"); sys.exit(2)
+        print("usage: req_smell_check.py SRS.md|docs/requirements.csv"); sys.exit(2)
     sys.exit(check(sys.argv[1]))
