@@ -30,7 +30,7 @@ WEAK_WORDS = [
 ]
 
 def is_requirement_line(line: str) -> bool:
-    return bool(re.match(r"^\s*[-*]?\s*(REQ|US|NFR)-\d+", line))
+    return bool(re.match(r"^\s*[-*]?\s*[A-Z][A-Z0-9]{1,9}-\d+", line))
 
 def load_lines(path: str):
     """Return requirement 'lines'. Accepts Markdown (SRS.md) or a Requirement
@@ -41,7 +41,7 @@ def load_lines(path: str):
         with open(path, newline="", encoding="utf-8-sig") as fh:
             for row in _csv.reader(fh):
                 key = next((c.strip() for c in row
-                            if re.match(r"^(REQ|US|NFR)-\d+$", c.strip())), None)
+                            if re.match(r"^[A-Z][A-Z0-9]{1,9}-\d+$", c.strip())), None)
                 if key:
                     text = " ".join(c.strip() for c in row if c.strip() != key)
                     out.append(f"{key}. {text}")
@@ -56,20 +56,20 @@ def check(path: str) -> int:
         if not is_requirement_line(line):
             continue
         low = " " + line.lower() + " "
-        rid = re.match(r"^\s*[-*]?\s*((?:REQ|US|NFR)-\d+)", line).group(1)
+        rid = re.match(r"^\s*[-*]?\s*([A-Z][A-Z0-9]{1,9}-\d+)", line).group(1)
 
         for w in WEAK_WORDS:
             if w in low:
                 findings.append((n, rid, f"weak/vague word '{w.strip()}' — is this verifiable?"))
-        if low.count(" shall ") > 1:
+        if low.count(" shall ") > 1 and not re.search(r"\b(otherwise|else|if not)\b", low):
             findings.append((n, rid, "multiple 'shall' — non-atomic requirement? split it"))
         if " and/or " in low:
             findings.append((n, rid, "'and/or' — ambiguous; pick one or split"))
-        if rid.startswith("REQ") and " shall " not in low:
+        if not rid.startswith(("US", "NFR")) and " shall " not in low:
             findings.append((n, rid, "no 'shall' — is this a requirement or a remark?"))
         if rid.startswith("US") and not re.search(r"given.*when.*then", low):
             findings.append((n, rid, "user story without Given/When/Then acceptance criteria"))
-        if rid.startswith("REQ") and not re.search(r"\(.*[A-Z][A-Za-z]+.*\)", line):
+        if not rid.startswith(("US", "NFR")) and not re.search(r"\(.*[A-Z][A-Za-z]+.*\)", line):
             findings.append((n, rid, "no class/method citation — traceability smell"))
 
     if not findings:

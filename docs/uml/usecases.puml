@@ -1,0 +1,10 @@
+@startuml
+left to right direction
+actor Player
+rectangle "JPacman Core" {
+  Player -- (Move Pac-Man)
+  Player -- (Consume Pellet)
+  Player -- (Encounter Ghost)
+  Player -- (Win Level)
+}
+@enduml
