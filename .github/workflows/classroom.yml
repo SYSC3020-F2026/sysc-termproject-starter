@@ -50,12 +50,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb
 
       # ---- A1: requirements deliverables present ----
-      - name: A1 - SRS / RTM / charter present
+      - name: A1 - SRS / task map / charter present
         id: a1
         uses: classroom-resources/autograding-command-grader@v1
         with:
           test-name: A1 files present
-          command: python scripts/check_files.py "**/SRS.pdf" "**/RTM.md" "**/TEAM_CHARTER.md"
+          command: python scripts/check_files.py "**/SRS.pdf" "**/task-a-map.md" "**/TEAM_CHARTER.md"
           timeout: 2
           max-score: 10
 

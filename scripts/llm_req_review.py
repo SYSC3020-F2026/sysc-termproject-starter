@@ -50,9 +50,20 @@ Requirements:
 """
 
 def load_requirements(path: str) -> str:
-    """Extract the requirement lines (REQ-/US-/NFR-) from the SRS."""
-    lines = open(path, encoding="utf-8").read().splitlines()
-    reqs = [l for l in lines if l.strip().lstrip("-* ").startswith(("REQ-", "US-", "NFR-"))]
+    """Extract requirement lines from SRS.md or a Requirement Yogi CSV export."""
+    if path.lower().endswith(".csv"):
+        import csv, re
+        reqs = []
+        with open(path, newline="", encoding="utf-8-sig") as fh:
+            for row in csv.reader(fh):
+                key = next((c.strip() for c in row
+                            if re.match(r"^[A-Z][A-Z0-9]{1,9}-\d+$", c.strip())), None)
+                if key:
+                    reqs.append(key + ". " + " ".join(c.strip() for c in row if c.strip() != key))
+    else:
+        lines = open(path, encoding="utf-8").read().splitlines()
+        import re as _re
+        reqs = [l for l in lines if _re.match(r"^[A-Z][A-Z0-9]{1,9}-\d+", l.strip().lstrip("-* "))]
     if not reqs:
         sys.exit("No requirement lines (REQ-/US-/NFR-) found in " + path)
     return "\n".join(reqs)

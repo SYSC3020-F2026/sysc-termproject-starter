@@ -18,6 +18,7 @@ Record the prompt and your accept/reject decisions in AI_USAGE.md, and the
 confirmed defects + fixes in docs/req-review.md. The rule-based pass below
 catches the mechanical smells; the LLM pass catches the semantic ones.
 """
+import csv as _csv
 import re
 import sys
 
@@ -29,29 +30,46 @@ WEAK_WORDS = [
 ]
 
 def is_requirement_line(line: str) -> bool:
-    return bool(re.match(r"^\s*[-*]?\s*(REQ|US|NFR)-\d+", line))
+    return bool(re.match(r"^\s*[-*]?\s*[A-Z][A-Z0-9]{1,9}-\d+", line))
+
+def load_lines(path: str):
+    """Return requirement 'lines'. Accepts Markdown (SRS.md) or a Requirement
+    Yogi CSV export (docs/requirements.csv): each CSV row containing a
+    REQ-/US-/NFR- key is rebuilt as '<KEY>. <all other cells joined>'."""
+    if path.lower().endswith(".csv"):
+        out = []
+        with open(path, newline="", encoding="utf-8-sig") as fh:
+            for row in _csv.reader(fh):
+                key = next((c.strip() for c in row
+                            if re.match(r"^[A-Z][A-Z0-9]{1,9}-\d+$", c.strip())), None)
+                if key:
+                    text = " ".join(c.strip() for c in row if c.strip() != key)
+                    out.append(f"{key}. {text}")
+        return out
+    return open(path, encoding="utf-8").read().splitlines()
+
 
 def check(path: str) -> int:
     findings = []
-    lines = open(path, encoding="utf-8").read().splitlines()
+    lines = load_lines(path)
     for n, line in enumerate(lines, 1):
         if not is_requirement_line(line):
             continue
         low = " " + line.lower() + " "
-        rid = re.match(r"^\s*[-*]?\s*((?:REQ|US|NFR)-\d+)", line).group(1)
+        rid = re.match(r"^\s*[-*]?\s*([A-Z][A-Z0-9]{1,9}-\d+)", line).group(1)
 
         for w in WEAK_WORDS:
             if w in low:
                 findings.append((n, rid, f"weak/vague word '{w.strip()}' — is this verifiable?"))
-        if low.count(" shall ") > 1:
+        if low.count(" shall ") > 1 and not re.search(r"\b(otherwise|else|if not)\b", low):
             findings.append((n, rid, "multiple 'shall' — non-atomic requirement? split it"))
         if " and/or " in low:
             findings.append((n, rid, "'and/or' — ambiguous; pick one or split"))
-        if rid.startswith("REQ") and " shall " not in low:
+        if not rid.startswith(("US", "NFR")) and " shall " not in low:
             findings.append((n, rid, "no 'shall' — is this a requirement or a remark?"))
         if rid.startswith("US") and not re.search(r"given.*when.*then", low):
             findings.append((n, rid, "user story without Given/When/Then acceptance criteria"))
-        if rid.startswith("REQ") and not re.search(r"\(.*[A-Z][A-Za-z]+.*\)", line):
+        if not rid.startswith(("US", "NFR")) and not re.search(r"\(.*[A-Z][A-Za-z]+.*\)", line):
             findings.append((n, rid, "no class/method citation — traceability smell"))
 
     if not findings:
@@ -65,5 +83,5 @@ def check(path: str) -> int:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("usage: req_smell_check.py SRS.md"); sys.exit(2)
+        print("usage: req_smell_check.py SRS.md|docs/requirements.csv"); sys.exit(2)
     sys.exit(check(sys.argv[1]))

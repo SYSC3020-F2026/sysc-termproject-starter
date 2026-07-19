@@ -1,7 +1,7 @@
 {
   "_comment": "Classic GitHub Classroom autograding for JPacman (Gradle). The workflow at .github/workflows/classroom.yml is the recommended equivalent. Points are a mechanical 'health' signal, NOT the assignment grade (grades follow the rubric).",
   "tests": [
-    { "name": "A1 - SRS / RTM / charter present", "setup": "", "run": "python scripts/check_files.py **/SRS.pdf **/RTM.md **/TEAM_CHARTER.md", "input": "", "output": "PASS", "comparison": "included", "timeout": 2, "points": 10 },
+    { "name": "A1 - SRS / task map / charter present", "setup": "", "run": "python scripts/check_files.py **/SRS.pdf **/task-a-map.md **/TEAM_CHARTER.md", "input": "", "output": "PASS", "comparison": "included", "timeout": 2, "points": 10 },
     { "name": "A2 - class/sequence PlantUML present", "setup": "", "run": "python scripts/check_files.py docs/uml/*.puml", "input": "", "output": "PASS", "comparison": "included", "timeout": 2, "points": 10 },
     { "name": "A3 - statecharts + ADRs present", "setup": "", "run": "python scripts/check_files.py docs/uml/*.puml docs/adr/ADR-*.md", "input": "", "output": "PASS", "comparison": "included", "timeout": 2, "points": 10 },
     { "name": "A4 - design-pattern RFC present", "setup": "", "run": "python scripts/check_files.py docs/rfc/RFC-*.md", "input": "", "output": "PASS", "comparison": "included", "timeout": 2, "points": 5 },
