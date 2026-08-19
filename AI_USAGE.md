@@ -1,28 +1,29 @@
-# AI Usage Note — Sprint <N>
+# AI Usage Note
 
-*Required appendix for every sprint deliverable. Be honest and specific — the quality of your prompting and your verification is graded, and undisclosed or unverified AI output is penalised.*
+Required with every deliverable. Be honest and specific — your prompting and
+your verification are graded, and undisclosed or unverified AI output is penalised.
 
 ## Tools used
 | Tool / model | Used for |
 |--------------|----------|
-| e.g., LangChain RAG assistant over the repo | locating classes / grounding questions |
-| e.g., Claude / ChatGPT / Copilot | drafting user stories / diagrams / test cases |
+| e.g., ChatGPT / Claude / Copilot | drafting requirements, reviewing, etc. |
+| e.g., a local LLM (Ollama + llama3.2) | the requirements-defect reviewer |
 
 ## Key prompts
-List the prompts that materially shaped a deliverable (paraphrase is fine). For the RAG assistant, include the questions asked of the codebase.
-
+List the prompts that materially shaped the deliverable (paraphrase is fine).
 1. …
 2. …
 
 ## What the AI got right
-Brief: where AI genuinely helped and saved time.
+Briefly: where it genuinely helped.
 
-## What the AI got wrong (and how we corrected it)
-Be specific — this is the most important section. Examples: invented a class that doesn't exist; mislabelled a pattern; produced a PlantUML diagram with wrong multiplicities; suggested a test that didn't compile or didn't raise coverage.
-
+## What the AI got wrong (and how we fixed it) — most important
+Be specific. Examples: invented a class that doesn't exist; flagged a defect that wasn't real; suggested a test that didn't compile.
 | AI claim / output | Problem | How we verified & corrected it |
-|-------------------|---------|-------------------------------|
+|-------------------|---------|--------------------------------|
 |  |  |  |
 
 ## Verification statement
-> We confirm that every AI-assisted artifact in this deliverable was checked against the actual code and corrected where needed, and that we understand and can defend all of it.
+> We confirm that every AI-assisted part of this deliverable was checked against
+> the actual code and corrected where needed, and that we understand and can
+> defend all of it.
