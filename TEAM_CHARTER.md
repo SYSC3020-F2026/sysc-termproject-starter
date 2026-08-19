@@ -1,19 +1,17 @@
 # Team Charter — SYSC 3020 Term Project
 
-*Deliverable of Sprint 1. Keep it to one page. Commit to the repo root as `TEAM_CHARTER.md`.*
+Fill this in for Assignment 1 and keep it updated each sprint.
 
-## Squad
-| Name | Student # | GitHub handle | Linear handle |
-|------|-----------|---------------|---------------|
-|  |  |  |  |
-|  |  |  |  |
-|  |  |  |  |
+## Team members
+| Name | Student # | GitHub username |
+|------|-----------|-----------------|
+|      |           |                 |
+|      |           |                 |
+|      |           |                 |
 
-**Assigned subsystem:** _(e.g., Ghost AI & behaviour)_ — approved by instructor on: ____
-
-## Role rotation (Product Owner / Scrum Master–Tech Lead / QA Lead)
-| Sprint | Product Owner | Scrum Master / Tech Lead | QA Lead |
-|--------|---------------|--------------------------|---------|
+## Roles (rotate every sprint — no one keeps a role two sprints in a row)
+| Sprint | Product Owner | Scrum Master | QA Lead |
+|--------|---------------|--------------|---------|
 | 1 |  |  |  |
 | 2 |  |  |  |
 | 3 |  |  |  |
@@ -21,21 +19,20 @@
 | 5 |  |  |  |
 | 6 |  |  |  |
 
-## Ways of working
-- **Meetings / stand-ups:** _(when, where, how — e.g., async daily on Linear + one weekly sync)_
-- **Communication channel:** _(e.g., Discord/Slack)_
-- **Branching convention:** `feature/<linear-id>-short-desc`; no direct commits to `main`.
-- **Pull requests:** every change via PR; **≥ 1 teammate approval** required before merge; CI must be green.
-- **Commit style:** small, focused commits that reference the Linear issue ID.
+## How we work
+- **Meetings / stand-ups:** _(when, where — e.g., 15 min twice a week)_
+- **Communication channel:** _(e.g., Discord / Teams)_
+- **Handling disagreements:** _(how you decide when you don't agree)_
+- **Attribution:** each member does their own work and, once we start using Git (A5), commits under their own GitHub account.
 
-## Definition of Done (applies to every deliverable)
-- [ ] Complete and consistent with prior sprints
-- [ ] Traceable to concrete code (named classes/files) and recorded in the RTM
-- [ ] Delivered via a reviewed, approved pull request
-- [ ] CI green (build + tests + static analysis / coverage gate as applicable)
-- [ ] AI usage disclosed in the sprint's AI Usage note
+## Definition of Done (every deliverable)
+- [ ] Complete and consistent with earlier sprints
+- [ ] Traceable to the code (named classes/methods)
+- [ ] Reviewed by at least one teammate
+- [ ] AI use disclosed in the AI-usage note
+- [ ] Submitted on time (Brightspace for A1–A4; the team repo for A5–A6)
 
 ## Contribution log (update every sprint)
-| Sprint | Member | Main contributions | PRs / issues |
-|--------|--------|--------------------|--------------|
-|  |  |  |  |
+| Sprint | Member | Main contributions |
+|--------|--------|--------------------|
+|  |  |  |
