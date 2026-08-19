@@ -21,3 +21,9 @@ to complete `scripts/llm_req_review.py`. Do your work locally and **submit your
 files as a `.zip` on Brightspace**.
 
 ## Building the game
+./gradlew build # compile + run the tests — needs JDK 11
+
+
+JPacman is self-contained (no companion libraries). If the build fails, first
+check that you are on **JDK 11**.
+
