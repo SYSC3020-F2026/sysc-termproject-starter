@@ -1,29 +1,36 @@
 #!/usr/bin/env python3
 """LLM-assisted requirement review — LangChain SKELETON (you complete it).
 
-This is the part of Assignment 1 (section 3b) where YOU build the AI reviewer.
-The rule-based scanner (req_smell_check.py) catches mechanical smells; this
-script must catch the SEMANTIC ones: hidden ambiguity, untestable claims,
-non-atomic behaviour the rules miss, and contradictions BETWEEN requirements.
+Task C of Assignment 1: YOU build the AI reviewer. A human checklist catches the
+obvious problems; this script must catch the SEMANTIC ones — hidden ambiguity,
+untestable claims, non-atomic behaviour, and contradictions BETWEEN requirements.
 
-Setup (once):
-    python3 -m pip install langchain langchain-openai        # or your provider's package
-    export OPENAI_API_KEY=...                                # or your provider's key
+Setup (once) — free, local, no API key:
+    # macOS
+    brew install ollama && brew services start ollama
+    ollama pull llama3.2
+    python3 -m venv .venv
+    .venv/bin/pip install langchain langchain-ollama
+    # Windows (PowerShell):
+    #   winget install Ollama.Ollama
+    #   ollama pull llama3.2
+    #   py -m venv .venv
+    #   .venv\\Scripts\\pip install langchain langchain-ollama
 
 Run:
-    python3 scripts/llm_req_review.py SRS.md > docs/llm-review-output.md
+    .venv/bin/python scripts/llm_req_review.py requirements.csv > review-output.md
 
 What you must do (the graded part):
-  1. Complete the PROMPT — this is prompt engineering: tell the model exactly
-     what counts as a defect (use the ISO 29148 characteristics: unambiguous,
-     complete, consistent, verifiable, singular, feasible, traceable), what to
-     ignore, and the exact output format you want back.
-  2. Complete the model call where marked TODO.
-  3. Run it, then JUDGE each finding: accept or reject, with a reason.
-     - confirmed defects + fixes  -> docs/req-review.md
-     - the prompt + your accept/reject decisions -> AI_USAGE.md
+  1. Complete the PROMPT — prompt engineering: tell the model exactly what counts
+     as a defect (ISO/IEC/IEEE 29148: unambiguous, complete, consistent,
+     verifiable, singular, feasible, traceable), what to ignore, and the exact
+     output format you want back.
+  2. Complete the model call where marked TODO (use ChatOllama).
+  3. Run it, then JUDGE each finding: accept or reject with a one-line reason.
+     Record the confirmed defects, your prompt, and your accept/reject decisions
+     in the DEFECT-REVIEW section of your SRS.
   The tool proposes; you decide. Submitting raw LLM output as your review
-  scores zero for this item.
+  receives no credit.
 """
 import sys
 
@@ -34,7 +41,7 @@ PROMPT = """You are a requirements-quality reviewer for a Software Requirements
 Specification (SRS) of a Pac-Man game's core logic.
 
 Review the requirements below for defects. A defect is a violation of one of
-the ISO 29148 quality characteristics:
+the ISO/IEC/IEEE 29148 quality characteristics:
 - TODO: list the characteristics and define, in one line each, what a
         violation looks like (do not just name them).
 - TODO: tell the model what NOT to flag (style preferences, formatting, ...).
@@ -50,7 +57,7 @@ Requirements:
 """
 
 def load_requirements(path: str) -> str:
-    """Extract requirement lines from SRS.md or a Requirement Yogi CSV export."""
+    """Extract requirement lines from an SRS text file or a Requirement Yogi CSV export."""
     if path.lower().endswith(".csv"):
         import csv, re
         reqs = []
@@ -61,11 +68,11 @@ def load_requirements(path: str) -> str:
                 if key:
                     reqs.append(key + ". " + " ".join(c.strip() for c in row if c.strip() != key))
     else:
-        lines = open(path, encoding="utf-8").read().splitlines()
         import re as _re
+        lines = open(path, encoding="utf-8").read().splitlines()
         reqs = [l for l in lines if _re.match(r"^[A-Z][A-Z0-9]{1,9}-\d+", l.strip().lstrip("-* "))]
     if not reqs:
-        sys.exit("No requirement lines (REQ-/US-/NFR-) found in " + path)
+        sys.exit("No requirement lines (e.g., SJC-001) found in " + path)
     return "\n".join(reqs)
 
 def review(path: str) -> None:
@@ -73,15 +80,12 @@ def review(path: str) -> None:
     prompt = PROMPT.format(requirements=requirements)
 
     # -----------------------------------------------------------------------
-    # 2. THE MODEL CALL — complete it (LangChain).
+    # 2. THE MODEL CALL — complete it (LangChain + local Ollama).
     # -----------------------------------------------------------------------
     # TODO: something like
-    #   from langchain_openai import ChatOpenAI
-    #   model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    #   response = model.invoke(prompt)
-    #   print(response.content)
-    # Any provider works (langchain-anthropic, langchain-ollama, ...);
-    # temperature 0 keeps the review reproducible.
+    #   from langchain_ollama import ChatOllama
+    #   model = ChatOllama(model="llama3.2", temperature=0)  # temp 0 = reproducible
+    #   print(model.invoke(prompt).content)
     raise NotImplementedError(
         "Complete the PROMPT above and the model call here, then re-run. "
         "See the module docstring for what is graded."
@@ -89,5 +93,5 @@ def review(path: str) -> None:
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("usage: llm_req_review.py SRS.md"); sys.exit(2)
+        print("usage: llm_req_review.py requirements.csv"); sys.exit(2)
     review(sys.argv[1])
