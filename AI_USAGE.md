@@ -9,10 +9,6 @@ your verification are graded, and undisclosed or unverified AI output is penalis
 | e.g., ChatGPT / Claude / Copilot | drafting requirements, reviewing, etc. |
 | e.g., a local LLM (Ollama + llama3.2) | the requirements-defect reviewer |
 
-## Key prompts
-List the prompts that materially shaped the deliverable (paraphrase is fine).
-1. …
-2. …
 
 ## What the AI got right
 Briefly: where it genuinely helped.
