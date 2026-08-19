@@ -25,5 +25,3 @@ Fill this in for Assignment 1 and keep it updated each sprint.
 - **Handling disagreements:** _(how you decide when you don't agree)_
 - **Attribution:** each member does their own work and records it in the contribution log below.
 
-## Definition of Done (every deliverable)
-- [ ] Complete and consistent with earlier
