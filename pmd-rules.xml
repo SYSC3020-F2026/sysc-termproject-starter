@@ -58,11 +58,8 @@
         </properties>
     </rule>
     <rule ref="category/java/design.xml/NPathComplexity" />
-    <rule ref="category/java/design.xml/TooManyMethods">
-    <properties>
-        <property name="maxmethods" value="5" />
-    </properties>
-    </rule>    <rule ref="category/java/design.xml/TooManyFields" />
+    <rule ref="category/java/design.xml/TooManyMethods" />
+    <rule ref="category/java/design.xml/TooManyFields" />
     <rule ref="category/java/design.xml/GodClass" />
     <rule ref="category/java/design.xml/LawOfDemeter" />
 </ruleset>
